@@ -1,0 +1,26 @@
+<ui-gmap-google-map center="trip.map.center" zoom="trip.map.zoom" options="trip.options">
+<ui-gmap-search-box events="trip.searchEvents" template="searchBox.html"></ui-gmap-search-box>
+<ui-gmap-markers models="'trip.markers'" coords="'self'" idKey="'id'"></ui-gmap-markers>
+</ui-gmap-google-map>
+<div class='trip-stats'>
+  <div ng-repeat="pins in trip.pins" ng-if="typeof tripId === number" class='trip-point'>
+    <span>{{$index}}</span>
+  </div>
+  <div class='new-point' ng-click="trip.showAddPointForm()">
+    <i class='fa fa-plus'></i>
+  </div>
+</div>
+<div class="new-point-form">
+  <h3>Add a new point</h3>
+  <form ng-submit="trip.addPoint()">
+    <input type='text' ng-model="trip.pitstop.name" placeholder='Name...'>
+    <input type='text' placeholder='Name...'>
+    <input type='text' placeholder='Name...'>
+    <input type='text' placeholder='Name...'>
+    <input type='text' placeholder='Name...'>
+    <input type='submit' value='Add' />
+  </form>
+</div>
+<script type='text/ngTemplate' id="searchBox.html">
+  <inout type='text' placholder="Search for a place...">
+</script>
