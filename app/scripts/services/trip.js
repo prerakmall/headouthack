@@ -8,6 +8,6 @@
  * controller of the headouthackapp
  */
 angular.module('headouthackApp')
-  .service('TripService', function ($resource) {
+  .service('TripService', function ($resource, $http) {
     var self = this;
   });

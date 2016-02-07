@@ -126,21 +126,6 @@ input {
   }
 }
 .start-form {
-  text-align: center;
-  h3 {
-    text-transform: upper-case;
-    margin: 5px;
-  }
-  a {
-    padding: 7px;
-    margin: 5px;
-    border: 1px solid #64AACC;
-    border-radius: 4px;
-    &:hover {
-      background: #64AACC;
-      color: #FFF;
-    }
-  }
 }
 .angular-google-map-container {
   height: 100vh;
@@ -165,6 +150,8 @@ input {
     transition:.2s ease;
     &:hover {
       cursor: pointer;
+      background: #64AACC;
+      color: #FFF;
     }
     span {
       position: relative;
@@ -191,5 +178,34 @@ input {
       cursor: pointer;
       font-size: 24px * 1.1;
     }
+  }
+}
+.new-point-form {
+  position: absolute;
+  top: 45px;
+  left: 35%;
+  width: 300px;;
+  padding: 30px;
+  border-radius: 10px;
+  z-index: 5;
+  background: #FFF;
+  text-align: center;
+  opactiy: 0;
+  h3 {
+    text-transform: upper-case;
+    margin: 5px;
+  }
+  input[type=submit] {
+    padding: 7px;
+    margin: 5px auto;
+    border: 1px solid #64AACC;
+    border-radius: 4px;
+    &:hover {
+      background: #64AACC;
+      color: #FFF;
+    }
+  }
+  &.show {
+    opactiy: 1
   }
 }
