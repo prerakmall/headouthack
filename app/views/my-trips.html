@@ -1,0 +1,7 @@
+<div class='my-trips'>
+  <div id="example">
+    <div ng-repeat="trip in myTrips.myTrips | orderBy: start_timeStamp ">
+      <h1>{{trip.start_location}} - {{trip.end_location}}</h1>
+    </div>
+  </div>
+</div>

@@ -8,22 +8,30 @@
  * controller of the headouthackapp
  */
 angular.module('headouthackApp')
-  .controller('TripCtrl', function (uiGmapIsReady, $routeParams) {
+  .controller('TripCtrl', function (TripService, uiGmapIsReady, $routeParams, $location) {
     var self = this;
     var map, getDirections;
     uiGmapIsReady.promise(1).then(function (instances) {
       map = instances[0].map;
       var directionsDisplay;
       var directionsService = new google.maps.DirectionsService();
-      getDirections = function (origin, destination) {
+      getDirections = function () {
         directionsDisplay = new google.maps.DirectionsRenderer();
         directionsDisplay.setMap(map);
-        var start = origin.location;
-        var end = destination.location;
+        var start = self.journey[0].location;
+        var end = self.journey[self.journey.length - 1].location;
+        var waypoints = [];
+        for (var i = 1; i < self.journey.length - 1; i++) {
+          waypoints.push({
+            location: self.journey[i].location,
+            stopover: true
+          })
+        }
         var request = {
           origin:start,
           destination:end,
-          travelMode: google.maps.TravelMode.DRIVING
+          travelMode: google.maps.TravelMode.DRIVING,
+          waypoints: waypoints
         };
         directionsService.route(request, function(result, status) {
           if (status == google.maps.DirectionsStatus.OK) {
@@ -63,6 +71,19 @@ angular.module('headouthackApp')
       location: '',
       startTime: (new Date()).toString()
     };
+    self.checkpoint= {
+      image: '',
+      text: '',
+      location: '',
+      timestamp: (new Date()).toString()
+    };
+    self.endtrip= {
+      tripid: self.tripId,
+      privacy: false,
+      rating: 0,
+      end_location: '',
+      end_timestamp: (new Date()).toString()
+    };
     self.journey = [];
     self.markers = [];
     self.tripTypeOptions = [
@@ -84,7 +105,7 @@ angular.module('headouthackApp')
                           longitude: lng,
                           show: false,
                           address: place.formatted_address,
-                          icon: 'http://www.nuoveterme.com/wp-content/uploads/free-map-marker-icon-blue.png'
+                          icon: ''
                         });
                       }
     }
@@ -92,14 +113,41 @@ angular.module('headouthackApp')
     self.showAddPointForm = function () {
       self.addPointFormShown = true;
     };
+    self.showCheckpointForm = function () {
+      self.addCheckpointFormShow = true;
+    };
 
     self.addPitstop = function () {
       self.addPointFormShown = false;
       self.journey.push(self.pitstop);
       if (self.journey.length > 1) {
-        getDirections(self.journey[self.journey.length-2], self.pitstop);
+        self.markers = [];
+        getDirections();
       }
+      TripService.createNewTrip(self.pitstop).then(function (response) {
+        $location.path('/trip/'+ response.tripid);
+      })
       self.pitstop = { startTime: (new Date()).toString() };
     };
 
+    self.addCheckpoint = function () {
+      TripService.addCheckpoint(self.checkpoint).then(function (response) { 
+        console.log(response); // TODO: image_url being returned here
+        var currentObject = response[response.length - 1];
+        currentObject
+        self.addCheckpointFormShow = false;
+      });
+    }
+    self.endTrip = function () {
+      TripService.endTrip(self.endtrip).then(function (response) { 
+        console.log(response); // TODO: whole journey being returned
+        self.endTripFormShow = false;
+      });
+    }
+    self.moveToPitstop = function (pitstop) {
+      var lat = pitstop.location.split(',')[0],
+          lng = pitstop.location.split(',')[1];
+      self.map.center = {latitude: lat, longitude: lng}
+      self.map.zoom = 16;
+    };
   });
