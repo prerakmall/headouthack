@@ -13,6 +13,9 @@
   <div class='new-point' ng-click="trip.journey.length === 0 ? trip.showAddPointForm() : trip.showCheckpointForm()">
     <i class='fa fa-plus'></i>
   </div>
+  <div class='new-point' style="float: right; top: 25%" ng-click="trip.endTripShowForm()">
+    <i class='fa fa-times'></i>
+  </div>
 </div>
 <div class="new-point-form" ng-show="trip.addPointFormShown">
   <h3>Start your journey</h3>
@@ -22,27 +25,28 @@
     <input type='text' ng-model="trip.pitstop.friends" placeholder='Friends youre travelling with'>
     <input type='text' ng-model="trip.pitstop.location" placeholder='Start location'>
     <input type='text' ng-model="trip.pitstop.startTime" placeholder='Start time'>
-    <input type='submit' value='Add' />
+    <input type='submit' value='Start' />
   </form>
 </div>
-<div class="new-checkpont-form" ng-show="trip.addCheckpointFormShow">
+<div class="new-point-form" ng-show="trip.addCheckpointFormShow">
   <h3>Oh pee break?!</h3>
   <form ng-submit="trip.addCheckpoint()" enctype="multipart/form-data">
     <input type='text' ng-model="trip.checkpoint.text" placeholder='Name...'>
-    <input type='file' ng-model="trip.checkpoint.image" placeholder='Friends youre travelling with'>
+    <input type='file' file-model="trip.checkpoint.image">
     <input type='text' ng-model="trip.checkpoint.location" placeholder='Start location'>
     <input type='text' ng-model="trip.checkpoint.timestamp" placeholder='Start time'>
     <input type='submit' value='Add' />
   </form>
 </div>
-<div class="new-checkpont-form" ng-show="trip.endTripFormShow">
+<div class="new-point-form" ng-show="trip.addEndTripFormShow">
   <h3>End Trip</h3>
   <form ng-submit="trip.endTrip()" enctype="multipart/form-data">
-    <input type='number' ng-model="trip.endtrip.text" placeholder='Name...'>
-    <input type='checkbox' ng-model="trip.endtrip.image" placeholder='Friends youre travelling with'>
-    <input type='text' ng-model="trip.endtrip.location" placeholder='Start location'>
-    <input type='text' ng-model="trip.endtrip.timestamp" placeholder='Start time'>
-    <input type='submit' value='Add' />
+    <input type='number' ng-model="trip.endtrip.rating" max="10" min="0" placeholder='Name...'>
+    <label for="end-trip-privacy">Private?</label>
+    <input type='checkbox' ng-model="trip.endtrip.privacy" name="end-trip-privacy" placeholder='Friends youre travelling with'>
+    <input type='text' ng-model="trip.endtrip.end_location" placeholder='Start location'>
+    <input type='text' ng-model="trip.endtrip.end_timestamp" placeholder='Start time'>
+    <input type='submit' value='End Trip' />
   </form>
 </div>
 

@@ -11,9 +11,9 @@ angular.module('headouthackApp')
   .service('TripService', function ($rootScope, $http) {
     var self = this;
     self.createNewTrip = function (pitstop) {
-      return $http.post('/trip', {
-        user_id: $rootScope.currentUser.userid,
-        trip_type: pitstop.type,
+      return $http.post('http://localhost:8000/trip', {
+        userid: $rootScope.currentUser.userid.toString(),
+        trip_type: pitstop.type.name,
         trip_friends: pitstop.friends,
         vehicle: 'car',
         start_location: pitstop.location,
@@ -22,13 +22,17 @@ angular.module('headouthackApp')
     }
     self.addCheckpoint = function (checkpoint, tripId) {
       checkpoint.tripid = tripId;
-      return $http.post('/pitstop', checkpoint)
+      return $http.post('http://localhost:8000/pitstop', checkpoint, {
+        headers: {
+         'Content-Type': 'multipart/form-data; charset=utf-8'
+        }
+      })
     }
     self.endTrip = function (endtrip, tripId) {
 
-      return $http.put('/trip', endtrip)
+      return $http.put('http://localhost:8000/trip', endtrip)
     }
     self.getMyTrips = function () {
-      return $http.get('/trips', {userid: $rootScope.currentUser.user_id});
+      return $http.get('http://localhost:8000/trips', {userid: $rootScope.currentUser.userid});
     }
   });

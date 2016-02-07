@@ -8,7 +8,7 @@
  * controller of the headouthackapp
  */
 angular.module('headouthackApp')
-  .controller('TripCtrl', function (TripService, uiGmapIsReady, $routeParams, $location) {
+.controller('TripCtrl', function (TripService, uiGmapIsReady, $routeParams, $location, fileUpload) {
     var self = this;
     var map, getDirections;
     uiGmapIsReady.promise(1).then(function (instances) {
@@ -16,7 +16,12 @@ angular.module('headouthackApp')
       var directionsDisplay;
       var directionsService = new google.maps.DirectionsService();
       getDirections = function () {
-        directionsDisplay = new google.maps.DirectionsRenderer();
+        directionsDisplay = new google.maps.DirectionsRenderer({
+          infoWindow: new google.maps.InfoWindow({
+            content: "This is custom content",
+            position: self.journey[0].location
+          })
+        });
         directionsDisplay.setMap(map);
         var start = self.journey[0].location;
         var end = self.journey[self.journey.length - 1].location;
@@ -98,6 +103,8 @@ angular.module('headouthackApp')
                         var lat = place.geometry.location.lat(), lng = place.geometry.location.lng();
                         self.map.center = {latitude: lat, longitude: lng};
                         self.pitstop.location = lat.toString() + ',' + lng.toString();
+                        self.checkpoint.location = lat.toString() + ',' + lng.toString();
+                        self.endtrip.end_location = lat.toString() + ',' + lng.toString();
                         self.pitstop.address = place.formatted_address;
                         self.markers.push({
                           id: self.markers.length,
@@ -116,6 +123,9 @@ angular.module('headouthackApp')
     self.showCheckpointForm = function () {
       self.addCheckpointFormShow = true;
     };
+    self.endTripShowForm = function () {
+      self.addEndTripFormShow = true;
+    };
 
     self.addPitstop = function () {
       self.addPointFormShown = false;
@@ -125,16 +135,20 @@ angular.module('headouthackApp')
         getDirections();
       }
       TripService.createNewTrip(self.pitstop).then(function (response) {
-        $location.path('/trip/'+ response.tripid);
+        self.tripId = response.data.tripid;
       })
       self.pitstop = { startTime: (new Date()).toString() };
     };
 
     self.addCheckpoint = function () {
-      TripService.addCheckpoint(self.checkpoint).then(function (response) { 
+      self.journey.push(self.checkpoint);
+      fileUpload.uploadFileToUrl(self.checkpoint.image, self.checkpoint, self.tripId).then(function (response) { 
         console.log(response); // TODO: image_url being returned here
-        var currentObject = response[response.length - 1];
-        currentObject
+        self.journey[self.journey.length -1].image = response.data.image;
+        if (self.journey.length > 1) {
+          self.markers = [];
+          getDirections();
+        }
         self.addCheckpointFormShow = false;
       });
     }
@@ -142,6 +156,7 @@ angular.module('headouthackApp')
       TripService.endTrip(self.endtrip).then(function (response) { 
         console.log(response); // TODO: whole journey being returned
         self.endTripFormShow = false;
+        self.markers = [];
       });
     }
     self.moveToPitstop = function (pitstop) {

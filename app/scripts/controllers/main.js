@@ -8,7 +8,7 @@
  * Controller of the headouthackApp
  */
 angular.module('headouthackApp')
-  .controller('MainCtrl', function ($interval, User) {
+  .controller('MainCtrl', function ($interval, User, $rootScope) {
     var self = this;
     self.bgImages = ['images/2.jpg', 'images/3.jpg', 'images/4.jpg'];
     self.bgImage = self.bgImages[0];
@@ -18,7 +18,7 @@ angular.module('headouthackApp')
     self.createUser = function () {
       return User.createUser().then(function (response) {
         console.log(response);
-        $rootScope.currentUser = response;
+        $rootScope.currentUser = response.data;
       });
     }
   });

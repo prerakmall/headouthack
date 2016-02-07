@@ -11,6 +11,6 @@ angular.module('headouthackApp')
   .service('User', function ($rootScope, $http) {
     var self = this;
     self.createUser = function () {
-      return $http.post('/user', { name: 'MyAwesome Name', profile_url: 'fb.me/someurl', fb_userid: '123348347' });
+      return $http.post('http://localhost:8000/user', { name: 'MyAwesome Name', profile_url: 'fb.me/someurl', fb_userid: '123348347' });
     };
   });
